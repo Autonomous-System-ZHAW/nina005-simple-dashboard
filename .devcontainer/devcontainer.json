@@ -1,0 +1,50 @@
+{
+    "name": "${localWorkspaceFolderBasename} ROS2 Dev-Container",
+    "privileged": true,
+    "remoteUser": "${localEnv:USER}",
+    "build": {
+        "dockerfile": "Dockerfile",
+        "args": {
+            "USERNAME": "${localEnv:USER}",
+            "DOCKER_REPO": "osrf/ros",
+            "ROS_DISTRO": "jazzy",
+            "IMAGE_SUFFIX": "-desktop-full"
+        }
+    },
+    "workspaceFolder": "/home/ws",
+    "workspaceMount": "source=${localWorkspaceFolder},target=/home/ros2_ws,type=bind",
+    "customizations": {
+        "vscode": {
+            "extensions":[
+                "ms-vscode.cpptools",
+                "ms-vscode.cpptools-themes",
+                "twxs.cmake",
+                "ms-python.python",
+                "ms-python.debugpy",
+                "ms-python.vscode-pylance",
+                "eamodio.gitlens",
+                "ranch-hand-robotics.rde-pack"
+            ]
+        }
+    },
+    "containerEnv": {
+        "DISPLAY": "unix:0",
+        "ROS_AUTOMATIC_DISCOVERY_RANGE": "LOCALHOST",
+        "ROS_DOMAIN_ID": "100"
+    },
+    "runArgs": [
+        "--net=host",
+        "-e", "DISPLAY=${env:DISPLAY}",
+        // --cap-add=NET_ADMIN allows to modify interfaces like ipv4 or can, not necesary if privileged=true
+    ],
+    "mounts": [
+       "source=/tmp/.X11-unix,target=/tmp/.X11-unix,type=bind,consistency=cached",
+       "source=/dev/dri,target=/dev/dri,type=bind,consistency=cached",
+       "source=${localEnv:HOME}/.ssh,target=/home/${localEnv:USER}/.ssh,type=bind"
+    ],
+    "postCreateCommand": [
+        "sudo rosdep update",
+        "sudo rosdep install --from-paths src --ignore-src -y",
+        "sudo chown -R ${whoami} /home/ros2_ws/"
+    ]
+}
