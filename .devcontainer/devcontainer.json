@@ -3,7 +3,7 @@
     "privileged": true,
     "remoteUser": "${localEnv:USER}",
     "build": {
-        "dockerfile": "Dockerfile",
+        "dockerfile": "../Dockerfile",
         "args": {
             "USERNAME": "${localEnv:USER}",
             "DOCKER_REPO": "osrf/ros",

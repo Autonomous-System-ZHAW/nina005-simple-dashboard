@@ -1,0 +1,18 @@
+# ros2.repos
+repositories:
+  # ---- Third-party source repos ----
+  ouster-ros:
+    type: git
+    url: https://github.com/ouster-lidar/ouster-ros.git
+    version: ros2   # or a tag you’ve tested
+
+  # ---- Your own repos ----
+  nina005_can_reader:
+    type: git
+    url: git@github.com:Autonomous-System-ZHAW/nina005_can_reader.git
+    version: main
+
+  nina005_ros2_interface:
+    type: git
+    url: git@github.com:Autonomous-System-ZHAW/nina005_ros2_interface.git
+    version: main
