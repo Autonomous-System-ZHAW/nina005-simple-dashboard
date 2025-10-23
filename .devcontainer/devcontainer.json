@@ -11,7 +11,7 @@
             "IMAGE_SUFFIX": "-desktop-full"
         }
     },
-    "workspaceFolder": "/home/ws",
+    "workspaceFolder": "/home/ros2_ws",
     "workspaceMount": "source=${localWorkspaceFolder},target=/home/ros2_ws,type=bind",
     "customizations": {
         "vscode": {
@@ -23,7 +23,7 @@
                 "ms-python.debugpy",
                 "ms-python.vscode-pylance",
                 "eamodio.gitlens",
-                "ranch-hand-robotics.rde-pack"
+                "ranch-hand-robotics.rde-pack" // official ROS extension is deprecated, new one by Ranch Hand Robotics
             ]
         }
     },
@@ -34,7 +34,7 @@
     },
     "runArgs": [
         "--net=host",
-        "-e", "DISPLAY=${env:DISPLAY}",
+        "-e", "DISPLAY=${env:DISPLAY}"
         // --cap-add=NET_ADMIN allows to modify interfaces like ipv4 or can, not necesary if privileged=true
     ],
     "mounts": [
