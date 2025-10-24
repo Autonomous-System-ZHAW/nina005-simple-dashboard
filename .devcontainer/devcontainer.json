@@ -3,16 +3,14 @@
     "privileged": true,
     "remoteUser": "${localEnv:USER}",
     "build": {
-        "dockerfile": "../Dockerfile",
+        "dockerfile": "Dockerfile.dev",
         "args": {
             "USERNAME": "${localEnv:USER}",
-            "DOCKER_REPO": "osrf/ros",
-            "ROS_DISTRO": "jazzy",
-            "IMAGE_SUFFIX": "-desktop-full"
+            "WS_BASENAME": "${localWorkspaceFolderBasename}"
         }
     },
-    "workspaceFolder": "/home/ros2_ws",
-    "workspaceMount": "source=${localWorkspaceFolder},target=/home/ros2_ws,type=bind",
+    "workspaceFolder": "/home/${localEnv:USER}/ros2_ws",
+    "workspaceMount": "source=${localWorkspaceFolder},target=/home/${localEnv:USER}/ros2_ws/${localWorkspaceFolderBasename},type=bind",
     "customizations": {
         "vscode": {
             "extensions":[
@@ -34,6 +32,8 @@
     },
     "runArgs": [
         "--net=host",
+        "--hostname=${localWorkspaceFolderBasename}-devcontainer",
+        "--add-host=${localWorkspaceFolderBasename}-devcontainer:127.0.1.1",
         "-e", "DISPLAY=${env:DISPLAY}"
         // --cap-add=NET_ADMIN allows to modify interfaces like ipv4 or can, not necesary if privileged=true
     ],
@@ -42,9 +42,6 @@
        "source=/dev/dri,target=/dev/dri,type=bind,consistency=cached",
        "source=${localEnv:HOME}/.ssh,target=/home/${localEnv:USER}/.ssh,type=bind"
     ],
-    "postCreateCommand": [
-        "sudo rosdep update",
-        "sudo rosdep install --from-paths src --ignore-src -y",
-        "sudo chown -R ${whoami} /home/ros2_ws/"
-    ]
+    // "postCreateCommand": "bash -lc 'whoami && id && ls -ld .'"
+    "postCreateCommand": "bash -lc 'mkdir src && vcs import src < ${containerWorkspaceFolder}/${localWorkspaceFolderBasename}/.devcontainer/ros2.repos --recursive'"
 }

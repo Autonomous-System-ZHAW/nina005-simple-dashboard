@@ -4,9 +4,9 @@ repositories:
   ouster-ros:
     type: git
     url: https://github.com/ouster-lidar/ouster-ros.git
-    version: ros2   # or a tag you’ve tested
+    version: ros2
 
-  # ---- Your own repos ----
+  # ---- ASLZ ----
   nina005_can_reader:
     type: git
     url: git@github.com:Autonomous-System-ZHAW/nina005_can_reader.git
