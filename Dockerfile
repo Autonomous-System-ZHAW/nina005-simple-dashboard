@@ -1,45 +1,29 @@
+# syntax=docker/dockerfile:1.4
 FROM osrf/ros:jazzy-desktop-full-noble
 
-ARG USERNAME=vscode
-ARG USER_UID=1000
-ARG USER_GID=${USER_UID}
 
+WORKDIR /ros2_ws
 
-# Delete user if it exists in container (e.g Ubuntu Noble: ubuntu)
-RUN if id -u $USER_UID ; then userdel `id -un $USER_UID` ; fi
-
-# Create the user
-RUN groupadd --gid $USER_GID $USERNAME \
-    && useradd --uid $USER_UID --gid $USER_GID -m $USERNAME \
-    #
-    # [Optional] Add sudo support. Omit if you don't need to install software after connecting.
-    && apt-get update \
-    && apt-get install -y sudo \
-    && echo $USERNAME ALL=\(root\) NOPASSWD:ALL > /etc/sudoers.d/$USERNAME \
-    && chmod 0440 /etc/sudoers.d/$USERNAME
+RUN mkdir -p /ros2_ws/src
+COPY . /ros2_ws/nina005-simple-dashboard
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    python3-venv python3-dev build-essential \
-    && rm -rf /var/lib/apt/lists/*
+      openssh-client git ca-certificates && \
+    rm -rf /var/lib/apt/lists/*
 
-RUN python3 -m venv /opt/venv
+RUN touch /etc/ros/rosdep/sources.list.d/19-default.list
 
-ENV VIRTUAL_ENV=/opt/venv
-ENV PATH="$VIRTUAL_ENV/bin:$PATH"
+# # Initialize and update rosdep (init may already have been done in the base image; ignore failures)
+RUN rosdep init || true \
+	&& rosdep update
 
-ENV SHELL=/bin/bash
+RUN mkdir -p -m 0700 /root/.ssh && ssh-keyscan -t rsa,ecdsa,ed25519 github.com >> /root/.ssh/known_hosts
 
-USER $USERNAME
+RUN --mount=type=ssh \
+    vcs import /ros2_ws/src < /ros2_ws/nina005-simple-dashboard/ros2.repos --recursive
 
-WORKDIR /home/${USERNAME}/ros2_ws/src
-COPY ros2.repos .
+RUN echo yaml file:///ros2_ws/nina005-simple-dashboard/custom_rosdep_rules.yaml >> /etc/ros/rosdep/sources.list.d/19-default.list
 
-RUN mkdir /root/.ssh/
-# ADD ssh key to import private repos
-# RUN vcs import < ros2.repos --recursive
-# && cd .. \
-# && apt update \
-# && rosdep update
-# && rosdep install --from-paths src --ignore-src -r -y
+RUN apt-get update && apt update && rosdep install -i --from-paths /ros2_ws/src -y
 
-CMD ["/bin/bash"]
+WORKDIR /ros2_ws
