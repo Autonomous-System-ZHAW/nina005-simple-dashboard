@@ -4,7 +4,7 @@
   <include file="$(find-pkg-share foxglove-bridge)/launch/foxglove_bridge_launch.xml" />
   
   <include file="$(find-pkg-share ouster_ros)/launch/sensor.launch.xml">
-    <arg name="hostname" value="192.168.1.100"/>
+    <arg name="sensor_hostname" value="192.168.1.100"/>
   </include>
 
   <include file="$(find-pkg-share ros2_socketcan)/launch/socker_can_receiver.launch.py" />
