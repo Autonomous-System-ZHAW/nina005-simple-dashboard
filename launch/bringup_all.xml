@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<launch>
+
+  <include file="$(find-pkg-share foxglove-bridge)/launch/foxglove_bridge_launch.xml" />
+  
+  <include file="$(find-pkg-share ouster_ros)/launch/sensor.launch.xml">
+    <arg name="hostname" value="192.168.1.100"/>
+  </include>
+
+  <include file="$(find-pkg-share ros2_socketcan)/launch/socker_can_receiver.launch.py" />
+
+  <node pkg="nina005_can_reader"
+      exec="peak_can_reader"
+      name="peak_can_reader"
+      output="screen" />
+
+</launch>
