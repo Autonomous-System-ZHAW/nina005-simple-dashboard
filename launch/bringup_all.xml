@@ -1,13 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <launch>
 
+  <arg name="can_interface" description="on which can interface the listening can to activate" default="can0"/>
+  <arg name="ouster_ip" description="ip of the ouster lidar" default="192.168.1.100"/>
+
+
   <include file="$(find-pkg-share foxglove_bridge)/launch/foxglove_bridge_launch.xml" />
   
   <include file="$(find-pkg-share ouster_ros)/launch/sensor.launch.xml">
-    <arg name="sensor_hostname" value="192.168.1.100"/>
+    <arg name="sensor_hostname" value="$(var ouster_ip)"/>
+    <arg name="viz" value="false"/>
   </include>
 
-  <include file="$(find-pkg-share ros2_socketcan)/launch/socket_can_receiver.launch.py" />
+  <include file="$(find-pkg-share ros2_socketcan)/launch/socket_can_receiver.launch.py">
+    <arg name="interface" value="$(var can_interface)"/>
+    <arg name="interval_sec" value="0.08"/>
+  </include>
 
   <node pkg="nina005_can_reader"
       exec="peak_can_reader"

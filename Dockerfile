@@ -3,6 +3,7 @@ FROM osrf/ros:jazzy-desktop-full-noble
 
 ENV DEBIAN_FRONTEND=noninteractive
 ENV PIP_BREAK_SYSTEM_PACKAGES=1
+ENV RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
     ca-certificates \
@@ -10,7 +11,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     nano \
     openssh-client \
     python3-pip \
-    ros-jazzy-foxglove-bridge && \
+    ros-jazzy-foxglove-bridge \
+    ros-jazzy-rmw-cyclonedds-cpp && \
     rm -rf /var/lib/apt/lists/*
 
 WORKDIR /ros2_ws
